@@ -92,6 +92,38 @@ You can also do a nearby query using a [geohash](http://geohash.org/):
 
     >>> client.get_nearby_geohash('com.simplegeo.global.twitter', '9q8y')
 
+## Using the US address geocoder
+
+You can use the `geocode/address` endpoint to convert a US address or
+intersection into a latitude and longitude.
+
+    >>> client.get_geocode_address('41 Decatur St, San Francisco CA 94103')
+
+This method returns a GeoJSON FeatureCollection.
+
+    {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "number": "41",
+                    "street": "Decatur St",
+                    "city": "San Francisco",
+                    "state": "CA",
+                    "zip": "94103",
+                    "fips_county": "06075",
+                    "score": 1.0,
+                    "precision":"range"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-122.406032, 37.772502]
+                }
+            }
+        ],
+        "address":"41 Decatur St, San Francisco CA 94103"
+    }
 
 ## Using the Reverse Geocoder
 

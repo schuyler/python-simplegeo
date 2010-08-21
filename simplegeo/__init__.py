@@ -14,7 +14,6 @@ except ImportError:
 
 API_VERSION = '0.1'
 
-
 class Record(object):
     def __init__(self, layer, id, lat, lon, created=None, **kwargs):
         self.layer = layer
@@ -117,7 +116,8 @@ class Client(object):
         'layer': 'layer/%(layer)s.json',
         'contains' : 'contains/%(lat)s,%(lon)s.json',
         'overlaps' : 'overlaps/%(south)s,%(west)s,%(north)s,%(east)s.json',
-        'boundary' : 'boundary/%(id)s.json'        
+        'boundary' : 'boundary/%(id)s.json',
+        'geocode_address': 'geocode/address.json'
     }
 
     def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
@@ -215,6 +215,10 @@ class Client(object):
         endpoint = self.endpoint('contains', lat=lat, lon=lon)
         return self._request(endpoint, "GET")
 
+    def get_geocode_address(self, address):
+        endpoint = self.endpoint('geocode_address')
+        return self._request(endpoint, "GET", data={"q":address})
+        
     def _request(self, endpoint, method, data=None):
         body = None
         params = {}

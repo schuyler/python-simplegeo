@@ -29,6 +29,8 @@ TESTING_LON_NON_US = '2.3509871'
 RECORD_TYPES = ['person', 'place', 'object']
 TESTING_BOUNDS = [-122.43409, 37.747296999999996, -122.424768, 37.751841999999996]
 
+TESTING_ADDRESS = "41 Decatur St, San Francisco CA 94103"
+
 class ClientTest(unittest.TestCase):
 
     def tearDown(self):
@@ -194,6 +196,14 @@ class ClientTest(unittest.TestCase):
         limit = 1
         overlaps_result = self.client.get_overlaps(TESTING_BOUNDS[1], TESTING_BOUNDS[0], TESTING_BOUNDS[3], TESTING_BOUNDS[2], limit=limit)
         self.assertOverlapEquals(overlaps_result[0])
+
+    def test_geocode_address(self):
+        geocode_result = self.client.get_geocode_address(TESTING_ADDRESS)
+        self.assertEquals(len(geocode_result), 1)
+        # this assumes that TESTING_ADDRESS is in San Francisco and TESTING_BOUNDS includes SF
+        coords = geocode_result["features"][0]["geometry"]["coordinates"]
+        self.assertTrue(TESTING_BOUNDS[0] <= coords[0] <= TESTING_BOUNDS[2])
+        self.assertTrue(TESTING_BOUNDS[1] <= coords[1] <= TESTING_BOUNDS[3])
 
     def test_density(self):
         density_results = self.client.get_density(TESTING_LAT, TESTING_LON, 'mon')
