@@ -205,6 +205,21 @@ class ClientTest(unittest.TestCase):
         self.assertTrue(TESTING_BOUNDS[0] <= coords[0] <= TESTING_BOUNDS[2])
         self.assertTrue(TESTING_BOUNDS[1] <= coords[1] <= TESTING_BOUNDS[3])
 
+    def test_search_businesses(self):
+        collection = self.client.search_businesses(38.4, -122.7, "cafe")
+        self.assertTrue("features" in collection)
+        self.assertTrue(len(collection["features"]) > 1)
+
+    def test_get_business(self):
+        TESTING_ID = "com.simplegeo.business.692014282"
+        feature = self.client.get_business(TESTING_ID)
+        self.assertEquals(feature["id"], TESTING_ID)
+
+    def test_get_categories(self):
+        categories = self.client.get_business_categories()
+        self.assertTrue(isinstance(categories, list))
+        self.assertTrue(len(categories))
+
     def test_density(self):
         density_results = self.client.get_density(TESTING_LAT, TESTING_LON, 'mon')
         features = density_results.get('features')

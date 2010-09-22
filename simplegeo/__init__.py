@@ -117,7 +117,10 @@ class Client(object):
         'contains' : 'contains/%(lat)s,%(lon)s.json',
         'overlaps' : 'overlaps/%(south)s,%(west)s,%(north)s,%(east)s.json',
         'boundary' : 'boundary/%(id)s.json',
-        'geocode_address': 'geocode/address.json'
+        'geocode_address': 'geocode/address.json',
+        'business_search': 'business/search/%(lat)s,%(lon)s.json',
+        'business': 'business/%(id)s.json',
+        'business_categories': 'business/categories.json'
     }
 
     def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
@@ -218,6 +221,24 @@ class Client(object):
     def get_geocode_address(self, address):
         endpoint = self.endpoint('geocode_address')
         return self._request(endpoint, "GET", data={"q":address})
+
+    def search_businesses(self, lat, lon, q=None, start=0, **kwargs):
+        args = {}
+        for k in ("name", "zip", "phone", "chain", "category"):
+            if k in kwargs:
+                args[k] = kwargs[k]
+        if q: args["q"] = q
+        if start: args["start"] = start
+        endpoint = self.endpoint('business_search', lat=lat, lon=lon)
+        return self._request(endpoint, "GET", data=args)
+
+    def get_business(self, business_id):
+        endpoint = self.endpoint('business', id=business_id)
+        return self._request(endpoint, "GET")
+
+    def get_business_categories(self):
+        endpoint = self.endpoint('business_categories')
+        return self._request(endpoint, "GET")
         
     def _request(self, endpoint, method, data=None):
         body = None
